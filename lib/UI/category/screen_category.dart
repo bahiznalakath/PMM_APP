@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:personal_money_management_app/UI/category/ExpenseCategoryList.dart';
 import 'package:personal_money_management_app/UI/category/IncomeCategoryList.dart';
-import '../../DB/ category/Category_DB.dart';
+import '../../hive_database/Category_DB/Category_DB.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);

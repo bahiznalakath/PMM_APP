@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:personal_money_management_app/model/category/category_model.dart';
-import '../../DB/ category/Category_DB.dart';
+import '../../hive_database/Category_DB/Category_DB.dart';
+import '../../model/Category_model/category_model.dart';
+
 
 ValueNotifier<CategoryType> selectedCategoryNotifier =
     ValueNotifier(CategoryType.income);

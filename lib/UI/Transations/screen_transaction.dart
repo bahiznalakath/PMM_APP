@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:personal_money_management_app/DB/%20category/Category_DB.dart';
-import 'package:personal_money_management_app/DB/transaction_db/transaction_bd.dart';
-import 'package:personal_money_management_app/model/category/category_model.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
+import '../../hive_database/Category_DB/Category_DB.dart';
+import '../../hive_database/Transaction DB/Transaction_DB.dart';
+import '../../model/Category_model/category_model.dart';
+import '../../model/Transaction_model/transaction_model.dart';
 
-import '../../model/transaction/transaction_model.dart';
 
 class ScreenTransaction extends StatelessWidget {
   const ScreenTransaction({super.key});
@@ -20,20 +22,31 @@ class ScreenTransaction extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             itemBuilder: (context, index) {
               final _values = newList[index];
-              return Card(
-                elevation: 2,
-                child: ListTile(
-                  title: Text(
-                    "RS ${_values.amount}",
+              return Slidable(
+                key: Key(_values.id!),
+                startActionPane: ActionPane(motion: ScrollMotion(), children: [
+                  SlidableAction(
+                    onPressed: (ctx) {
+                      TransactionBD.instance.deleteTransaction(_values.id!);
+                    },
+                    icon: Icons.delete,
+                  )
+                ]),
+                child: Card(
+                  elevation: 2,
+                  child: ListTile(
+                    title: Text(
+                      "RS ${_values.amount}",
+                    ),
+                    leading: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: _values.type == CategoryType.income
+                          ? Colors.green
+                          : Colors.red,
+                      child: Text(parseDate(_values.date)),
+                    ),
+                    subtitle: Text(_values.category.name),
                   ),
-                  leading: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: _values.type == CategoryType.income
-                        ? Colors.green
-                        : Colors.red,
-                    child: Text(parseDate(_values.date)),
-                  ),
-                  subtitle: Text(_values.category.name),
                 ),
               );
             },
@@ -48,7 +61,10 @@ class ScreenTransaction extends StatelessWidget {
     );
   }
 
-  String parseDate(DateTime data) {
-    return '${data.day}\n${data.month}';
+  String parseDate(DateTime date) {
+    final _date = DateFormat.MMMd().format(date);
+    final _splitedDate = _date.split('');
+    return '${_splitedDate.last}\n ${_splitedDate.first}';
+    // return '${date.day}\n${date.month}';
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:personal_money_management_app/model/category/category_model.dart';
-import 'package:personal_money_management_app/model/transaction/transaction_model.dart';
 import 'UI/add_transaction/screen_add_transaction.dart';
 import 'UI/home/screens_home.dart';
+import 'model/Category_model/category_model.dart';
+import 'model/Transaction_model/transaction_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

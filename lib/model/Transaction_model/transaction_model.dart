@@ -1,5 +1,7 @@
 import 'package:hive/hive.dart';
-import 'package:personal_money_management_app/model/category/category_model.dart';
+
+import '../Category_model/category_model.dart';
+
 part 'transaction_model.g.dart';
 
 @HiveType(typeId: 3)

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../DB/ category/Category_DB.dart';
-import '../../model/category/category_model.dart';
+import '../../hive_database/Category_DB/Category_DB.dart';
+import '../../model/Category_model/category_model.dart';
 
 class IncomeCategoryList extends StatelessWidget {
   const IncomeCategoryList({super.key});

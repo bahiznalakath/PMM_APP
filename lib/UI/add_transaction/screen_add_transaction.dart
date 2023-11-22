@@ -1,11 +1,9 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:personal_money_management_app/DB/%20category/Category_DB.dart';
-import 'package:personal_money_management_app/model/category/category_model.dart';
-import 'package:personal_money_management_app/model/transaction/transaction_model.dart';
+import '../../hive_database/Category_DB/Category_DB.dart';
+import '../../hive_database/Transaction DB/Transaction_DB.dart';
+import '../../model/Category_model/category_model.dart';
+import '../../model/Transaction_model/transaction_model.dart';
 
-import '../../DB/transaction_db/transaction_bd.dart';
 
 class ScreenAddTransaction extends StatefulWidget {
   static const routeName = 'add_transaction';

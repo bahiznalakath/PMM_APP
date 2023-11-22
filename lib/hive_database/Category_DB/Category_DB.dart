@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
-import '../../model/category/category_model.dart';
+import '../../model/Category_model/category_model.dart';
+
 
 const CATEGORY_DB_NAME = 'category-database';
 
