@@ -1,39 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../../Provider/total_expense_notifier.dart';
+import '../../Provider/total_income_notifier.dart';
 import '../../hive_database/Category_DB/Category_DB.dart';
 import '../../hive_database/Transaction DB/Transaction_DB.dart';
 import '../../model/Category_model/category_model.dart';
+import '../../model/Expense_model/expense.dart';
 import '../../model/Transaction_model/transaction_model.dart';
 import '../home/widgets/incomeexpensecard.dart';
 
 class ScreenTransaction extends StatefulWidget {
-  const ScreenTransaction({super.key});
+  const ScreenTransaction({Key? key}) : super(key: key);
 
   @override
   State<ScreenTransaction> createState() => _ScreenTransactionState();
 }
 
 class _ScreenTransactionState extends State<ScreenTransaction> {
-  late double totalIncome = 0.0;
-  late double totalExpense = 0.0;
-
   @override
   void initState() {
-    super.initState();
     fetchDataAndBuildUI();
-    TransactionBD.instance.refresh();
+    super.initState();
   }
 
   Future<void> fetchDataAndBuildUI() async {
-    // setState(() async {
-      totalIncome = await calculateTotalAmount(CategoryType.income);
-      totalExpense = await calculateTotalAmount(CategoryType.expense);
-    // });
+    var totalIncomeNotifier = context.read<TotalIncomeNotifier>();
+    var totalExpenseNotifier = context.read<TotalExpenseNotifier>();
+
+    totalIncomeNotifier.setTotalIncome(await calculateTotalAmount(CategoryType.income));
+    totalExpenseNotifier.setTotalExpense(await calculateTotalAmount(CategoryType.expense));
   }
 
   @override
   Widget build(BuildContext context) {
+    double totalIncome = context.watch<TotalIncomeNotifier>().totalIncome;
+    double totalExpense = context.watch<TotalExpenseNotifier>().totalExpense;
+
     CategoryBD.instance.refreshUI();
     TransactionBD.instance.refresh();
 
@@ -50,18 +54,23 @@ class _ScreenTransactionState extends State<ScreenTransaction> {
               children: [
                 Expanded(
                   child: IncomeExpenseCard(
-                    expenseData: ExpenseData("Income", totalIncome.toString(),
-                        Icons.arrow_upward_rounded),
+                    expenseData: ExpenseData(
+                      "Income",
+                      totalIncome.toString(),
+                      Icons.arrow_upward_rounded,
+                    ),
                   ),
                 ),
                 const SizedBox(
-                  width:
-                      defaultSpacing, // Make sure to define defaultSpacing somewhere
+                  width: defaultSpacing, // Make sure to define defaultSpacing somewhere
                 ),
                 Expanded(
                   child: IncomeExpenseCard(
-                    expenseData: ExpenseData("Expense", totalExpense.toString(),
-                        Icons.arrow_downward_rounded),
+                    expenseData: ExpenseData(
+                      "Expense",
+                      totalExpense.toString(),
+                      Icons.arrow_downward_rounded,
+                    ),
                   ),
                 ),
               ],
@@ -70,23 +79,20 @@ class _ScreenTransactionState extends State<ScreenTransaction> {
           Container(
             width: MediaQuery.of(context).size.width,
             color: Colors.white,
-            height: 510,
+            height: 615,
             child: ValueListenableBuilder(
               valueListenable: TransactionBD.instance.transactionListNotifier,
-              builder: (BuildContext context, List<TransactionModel> newList,
-                  Widget? _) {
+              builder: (BuildContext context, List<TransactionModel> newList, Widget? _) {
                 return ListView.separated(
                   padding: const EdgeInsets.all(10),
                   itemBuilder: (context, index) {
                     final values = newList[index];
                     return Slidable(
                       key: Key(values.id!),
-                      startActionPane:
-                          ActionPane(motion: const ScrollMotion(), children: [
+                      startActionPane: ActionPane(motion: ScrollMotion(), children: [
                         SlidableAction(
-                          onPressed: (ctx) {
-                            TransactionBD.instance
-                                .deleteTransaction(values.id!);
+                          onPressed: (context) {
+                            TransactionBD.instance.deleteTransaction(values.id!);
                           },
                           icon: Icons.delete,
                         )
@@ -103,9 +109,7 @@ class _ScreenTransactionState extends State<ScreenTransaction> {
                                 ? Colors.green
                                 : Colors.red,
                             child: Text(
-                              parseDate(
-                                values.date,
-                              ),
+                              parseDate(values.date),
                               style: const TextStyle(color: Colors.white),
                             ),
                           ),
@@ -134,12 +138,10 @@ class _ScreenTransactionState extends State<ScreenTransaction> {
     final date0 = DateFormat.MMMd().format(date);
     final splitDate = date0.split('');
     return '${splitDate.last}\n ${splitDate.first}';
-    // return '${date.day}\n${date.month}';
   }
 
   Future<double> calculateTotalAmount(CategoryType type) async {
-    List<TransactionModel> transactions =
-        await TransactionBD.instance.getTransactionList();
+    final transactions = await TransactionBD.instance.getTransactionList();
     double totalAmount = 0;
 
     for (var transaction in transactions) {

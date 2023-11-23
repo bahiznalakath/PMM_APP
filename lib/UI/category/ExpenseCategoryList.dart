@@ -12,14 +12,14 @@ class ExpenseCategoryList extends StatelessWidget {
         builder: (BuildContext, List<CategoryModel> newList, Widget? _) {
           return ListView.separated(
               itemBuilder: (context, index) {
-                final _catogroy = newList[index];
+                final catogroy = newList[index];
                 return Card(
                   child: ListTile(
-                    title: Text(_catogroy.name),
+                    title: Text(catogroy.name),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
-                        CategoryBD.instance.deletCategory(_catogroy.id);
+                        CategoryBD.instance.deletCategory(catogroy.id);
                       },
                     ),
                   ),

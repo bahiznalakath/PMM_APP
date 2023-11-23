@@ -57,8 +57,8 @@ class CategoryBD implements CategorydbFunctions {
 
   @override
   Future<void> deletCategory(String CategoryID) async{
-    final _categoryDB = await Hive.openBox<CategoryModel>(CATEGORY_DB_NAME);
-    _categoryDB.delete(CategoryID);
+    final categoryDB = await Hive.openBox<CategoryModel>(CATEGORY_DB_NAME);
+    categoryDB.delete(CategoryID);
     refreshUI();
 
   }

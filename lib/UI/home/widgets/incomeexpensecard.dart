@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../model/Expense_model/expense.dart';
+
 const double defaultSpacing = 16.0;
 
-class ExpenseData {
-  final String label;
-  final String amount;
-  final IconData icon;
-
-  const ExpenseData(this.label, this.amount, this.icon);
-}
 
 class IncomeExpenseCard extends StatelessWidget {
   final ExpenseData expenseData;
