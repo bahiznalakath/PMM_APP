@@ -10,6 +10,8 @@ abstract class TransactionBDFuctions {
 
   Future<List<TransactionModel>> getAllTransaction();
 
+  Future<List<TransactionModel>> getTransactionList();
+
   Future<void> deleteTransaction(String id);
 }
 
@@ -37,6 +39,13 @@ class TransactionBD implements TransactionBDFuctions {
     transactionListNotifier.value.clear();
     transactionListNotifier.value.addAll(_list);
     transactionListNotifier.notifyListeners();
+  }
+
+  Future<List<TransactionModel>> getTransactionList() async {
+    final _db = await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
+    final List<TransactionModel> transactions = _db.values.toList();
+    transactions.sort((first, second) => second.date.compareTo(first.date));
+    return transactions;
   }
 
   @override

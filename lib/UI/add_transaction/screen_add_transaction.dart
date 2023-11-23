@@ -4,7 +4,6 @@ import '../../hive_database/Transaction DB/Transaction_DB.dart';
 import '../../model/Category_model/category_model.dart';
 import '../../model/Transaction_model/transaction_model.dart';
 
-
 class ScreenAddTransaction extends StatefulWidget {
   static const routeName = 'add_transaction';
 
@@ -22,12 +21,7 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
   String? _categoryID;
 
   final _purposeTextEditingController = TextEditingController();
-
   final _amountTextEditingController = TextEditingController();
-
-  // final _purposeTextEditingController = TextEditingController();
-
-  // final _purposeTextEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -36,112 +30,145 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
   }
 
   @override
+  void dispose() {
+    _purposeTextEditingController.dispose();
+    _amountTextEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: const Text('Add Your Transaction'), centerTitle: true),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                keyboardType: TextInputType.text,
-                decoration: const InputDecoration(hintText: 'Purpose'),
-                controller: _purposeTextEditingController,
-              ),
-              TextFormField(
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: 'Amount',
+          padding: const EdgeInsets.all(10.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10,),
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: 'Purpose',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  ),
+                  controller: _purposeTextEditingController,
                 ),
-                controller: _amountTextEditingController,
-              ),
-              TextButton.icon(
-                onPressed: () async {
-                  final _selectedDateTemp = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate:
-                        DateTime.now().subtract(const Duration(days: 30)),
-                    lastDate: DateTime.now(),
-                  );
-                  if (_selectedDateTemp != null) {
-                    return;
-                  } else {
-                    print(_selectedDateTemp.toString());
-                    (() {
-                      _selectedDate = _selectedDateTemp;
-                    });
-                  }
-                },
-                icon: const Icon(Icons.calendar_month),
-                label: Text(_selectedDate == null
-                    ? 'Select Date'
-                    : _selectedDate.toString()),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    children: [
+                const SizedBox(height: 10,),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: 'Amount',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  ),
+                  controller: _amountTextEditingController,
+                ),
+                const SizedBox(height: 10,),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextButton.icon(
+                    onPressed: () async {
+                      final selectedDateTemp = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                        lastDate: DateTime.now(),
+                      );
+                      if (selectedDateTemp != null) {
+                        setState(() {
+                          _selectedDate = selectedDateTemp;
+                        });
+                      }
+                    },
+                    icon: const Icon(Icons.calendar_month),
+                    label: Text(_selectedDate == null ? 'Select Date' : _selectedDate.toString()),
+                  ),
+                ),
+                const SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      children: [
+                        Radio(
+                          value: CategoryType.income,
+                          groupValue: _selectedCategoryType,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedCategoryType = CategoryType.income;
+                              _categoryID = null;
+                            });
+                          },
+                        ),
+                        const Text('Income')
+                      ],
+                    ),
+                    Row(children: [
                       Radio(
-                        value: CategoryType.income,
+                        value: CategoryType.expense,
                         groupValue: _selectedCategoryType,
                         onChanged: (newValue) {
                           setState(() {
-                            _selectedCategoryType = CategoryType.income;
+                            _selectedCategoryType = CategoryType.expense;
                             _categoryID = null;
                           });
                         },
                       ),
-                      const Text('Income')
-                    ],
-                  ),
-                  Row(children: [
-                    Radio(
-                      value: CategoryType.expense,
-                      groupValue: _selectedCategoryType,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedCategoryType = CategoryType.expense;
-                          _categoryID = null;
-                        });
-                      },
-                    ),
-                    const Text('Expense')
-                  ]),
-                ],
-              ),
-              DropdownButton<String>(
-                hint: const Text("Select category"),
-                value: _categoryID,
-                items: (_selectedCategoryType == CategoryType.income
+                      const Text('Expense')
+                    ]),
+                  ],
+                ),
+                const SizedBox(height: 10,),
+                Center(
+                  child: DropdownButton<String>(
+                    hint: const Text("Select category"),
+                    value: _categoryID,
+                    items: (_selectedCategoryType == CategoryType.income
                         ? CategoryBD().incomeCategoryListListenabler
                         : CategoryBD().expenseCategoryListListenabler)
-                    .value
-                    .map((e) {
-                  return DropdownMenuItem(
-                    value: e.id,
-                    child: Text(e.name),
-                    onTap: () {
-                      _selectedCategoryModel = e;
+                        .value
+                        .map((e) {
+                      return DropdownMenuItem(
+                        value: e.id,
+                        child: Text(e.name),
+                        onTap: () {
+                          setState(() {
+                            _selectedCategoryModel = e;
+                          });
+                        },
+                      );
+                    }).toList(),
+                    onChanged: (selectedValue) {
+                      setState(() {
+                        _categoryID = selectedValue;
+                      });
                     },
-                  );
-                }).toList(),
-                onChanged: (selectedValue) {
-                  setState(() {
-                    _categoryID = selectedValue;
-                    // _selectedCategoryModel = selectedValue as CategoryModel?;
-                  });
-                },
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  addTransaction();
-                },
-                child: const Text('Submit'),
-              )
-            ],
+                  ),
+                ),
+                const SizedBox(height: 10,),
+                Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: ElevatedButton(
+                      onPressed: addTransaction,
+                      style: ElevatedButton.styleFrom(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                      ),
+                      child: const Text('Submit'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -149,37 +176,27 @@ class _ScreenAddTransactionState extends State<ScreenAddTransaction> {
   }
 
   Future<void> addTransaction() async {
-    final _purpostText = _purposeTextEditingController.text;
-    final _amountText = _amountTextEditingController.text;
-    if (_purpostText.isEmpty) {
+    final purposeText = _purposeTextEditingController.text;
+    final amountText = _amountTextEditingController.text;
+
+    if (purposeText.isEmpty || amountText.isEmpty || _selectedCategoryModel == null || _selectedDate == null) {
       return;
     }
-    if (_amountText.isEmpty) {
+
+    final parsedAmount = double.tryParse(amountText);
+    if (parsedAmount == null) {
       return;
     }
-    // if (_categoryID == null) {
-    //   return;
-    // }
-    if (_selectedCategoryModel == null) {
-      return;
-    }
-    if (_selectedDate == null) {
-      return;
-    }
-    final _parsedAmount = double.tryParse(_amountText);
-    if (_parsedAmount == null) {
-      return;
-    }
-    // if (_selectedDateTemp.toString()) {
-    //   return;
-    // }
-    final _model =TransactionModel(
-        puepose: _purpostText,
-        amount: _parsedAmount,
-        date: _selectedDate!,
-        type: _selectedCategoryType!,
-        category: _selectedCategoryModel!);
-    await TransactionBD.instance.addTransaction(_model);
+
+    final model = TransactionModel(
+      purpose: purposeText,
+      amount: parsedAmount,
+      date: _selectedDate!,
+      type: _selectedCategoryType!,
+      category: _selectedCategoryModel!,
+    );
+
+    await TransactionBD.instance.addTransaction(model);
     Navigator.of(context).pop();
     TransactionBD.instance.refresh();
   }

@@ -12,16 +12,20 @@ Future<void> showCategoryAddpop(BuildContext context) async {
       context: context,
       builder: (context) {
         return SimpleDialog(
-          title: const Text('Add category'),
+            shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),),
+          elevation: 2,
+          title: const Text('Add Category'),
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 controller: _nameEditingcontroller,
-                decoration: const InputDecoration(
-                    hintText: 'category name', border: OutlineInputBorder()),
+                decoration:  InputDecoration(
+                    hintText: 'Category Name', border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))),
               ),
             ),
+            const SizedBox(height: 5,),
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Row(
@@ -37,6 +41,7 @@ Future<void> showCategoryAddpop(BuildContext context) async {
                 ],
               ),
             ),
+            const SizedBox(height: 5,),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
@@ -53,8 +58,15 @@ Future<void> showCategoryAddpop(BuildContext context) async {
                     CategoryBD.instance.insertCategory(_category);
                     Navigator.of(context).pop();
                   },
+                  style: ElevatedButton.styleFrom(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                  ),
                   child: const Text('ADD')),
-            )
+            ),
+            const SizedBox(height: 5,),
           ],
         );
       });

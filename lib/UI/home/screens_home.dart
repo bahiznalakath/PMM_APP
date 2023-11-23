@@ -19,24 +19,19 @@ class ScreenHome extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.grey[100],
         floatingActionButton: FloatingActionButton(
+          elevation: 5,
+          backgroundColor: Colors.pink,
           onPressed: () {
             if (selectedIndexNotifier.value == 0) {
               Navigator.of(context).pushNamed(ScreenAddTransaction.routeName);
-              print("Add transition");
-              // final _sample = CategoryModel(id: DateTime
-              //     .now()
-              //     .microsecondsSinceEpoch
-              //     .toString(),
-              //     name: 'Travel', type: CategoryType.expense);
-              // CategoryBD().insertCategory(_sample);
-
             } else {
               showCategoryAddpop(context);
             }
           },
+          child: const Icon(Icons.add),
         ),
         bottomNavigationBar: const CustomBottomNavigation(),
-        appBar: AppBar(title: const Text('MONEY MANAGER'), centerTitle: true),
+        // appBar: AppBar(title: const Text('MONEY MANAGER'), centerTitle: true,backgroundColor: Colors.pink,),
         body: SafeArea(
           child: ValueListenableBuilder(
               valueListenable: selectedIndexNotifier,

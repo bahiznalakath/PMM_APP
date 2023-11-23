@@ -33,13 +33,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "MONEY MANAGER",
-      theme: ThemeData(
-        primaryColor: Colors
-            .deepPurple, // Adjust this according to your needs// Adjust this according to your needs
-        // Other theme configurations...
-      ),
       debugShowCheckedModeBanner: false,
       home: const ScreenHome(),
+      theme: ThemeData(
+        primarySwatch: Colors.pink, // Set the primary color to pink
+
+      ),
       routes: {
         ScreenAddTransaction.routeName: (ctx) => const ScreenAddTransaction(),
       },
